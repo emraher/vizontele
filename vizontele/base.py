@@ -31,11 +31,10 @@ class BaseCrawler:
             try:
                 self.after_body_loaded(result.text)
                 self.episode['video_links'] = vizontele.sort_video_links(self.episode['video_links'])
-                self.crawl_done()
             except:
-                self.crawl_failed()
-        else:
-            self.crawl_failed()
+                pass
+
+        self.callback(self.episode)
 
     def generate_episode_page_url(self):
         # Must be implemented by child class
@@ -44,12 +43,3 @@ class BaseCrawler:
     def after_body_loaded(self, text):
         # Must be implemented by child class
         pass
-
-    def crawl_failed(self):
-        self.callback(self.episode)
-
-    def crawl_done(self):
-        if self.episode['video_links'] is not None and len(self.episode['video_links']) > 0:
-            self.callback(self.episode)
-        else:
-            self.crawl_failed()

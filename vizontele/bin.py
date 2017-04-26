@@ -11,14 +11,6 @@ from vizontele import crawler
 from vizontele.crawler import Crawler
 
 
-def readable_bytes(num, suffix='B'):
-    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
-        if abs(num) < 1024.0:
-            return "%3.1f %s%s" % (num, unit, suffix)
-        num /= 1024.0
-    return "%.1f%s%s" % (num, 'Yi', suffix)
-
-
 def download_callback(downloader):
     percent = ("{0:.1f}")\
         .format(100 * (downloader.total_downloaded / float(downloader.total_length)))
@@ -29,16 +21,6 @@ def download_callback(downloader):
     # Print New Line on Complete
     if downloader.total_downloaded == downloader.total_length:
         sys.stdout.write('\n')
-    """
-    sys.stdout.write("\r                                                                                            ")
-    sys.stdout.write("\rDownloading %s [%s%%] [%s/sec] %s %s" %
-                     (downloader.file_name,
-                      round(100 * (float(downloader.total_downloaded) / downloader.total_length), 2),
-                      downloader.readable_speed,
-                      readable_bytes(downloader.total_downloaded),
-                      readable_bytes(downloader.total_length)))
-    sys.stdout.flush()
-    """
 
 
 def run(argv):
