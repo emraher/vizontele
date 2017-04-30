@@ -4,20 +4,20 @@ import json
 import requests
 from furl import furl
 
-from base import BaseCrawler
+from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
 
 
-class DiziboxCrawler(BaseCrawler):
+class DiziboxCrawler(BaseDiziCrawler):
     def __init__(self):
-        BaseCrawler.__init__(self)
+        BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
         return "http://www.dizibox1.com/" + self.episode['dizi_url'] + "-" + \
                str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum-izle"
 
     def after_body_loaded(self, text):
-        ajax_headers = copy.copy(BaseCrawler.headers)
+        ajax_headers = copy.copy(BaseDiziCrawler.headers)
         ajax_headers['X-Requested-With'] = 'XMLHttpRequest'
 
         page_dom = pq(text)
@@ -30,6 +30,8 @@ class DiziboxCrawler(BaseCrawler):
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+
+        self.episode['site'] = 'dizibox'
 
     def after_sources_loaded(self, text):
         sources = json.loads(text)['VideoSources']

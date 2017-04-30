@@ -6,13 +6,13 @@ import re
 import demjson
 import requests
 
-from base import BaseCrawler
+from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
 
 
-class SezonlukDiziCrawler(BaseCrawler):
+class SezonlukDiziCrawler(BaseDiziCrawler):
     def __init__(self):
-        BaseCrawler.__init__(self)
+        BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
         return "http://sezonlukdizi.net/" + self.episode['dizi_url'] + "/" + \
@@ -22,10 +22,12 @@ class SezonlukDiziCrawler(BaseCrawler):
         page_dom = pq(text)
         player_address = "http:" + page_dom("iframe[height='360']").eq(0).attr("src")
 
-        result = requests.get(player_address, headers=BaseCrawler.headers)
+        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+
+        self.episode['site'] = 'sezonlukdizi'
 
     def after_sources_loaded(self, text):
         videopush = re.compile(r"video\.push\(([^(]*)\);")
@@ -48,7 +50,6 @@ class SezonlukDiziCrawler(BaseCrawler):
             match = m.group(1)
 
             source = demjson.decode(match)
-            print source
 
             if source['label'][0] == 'T':
                 source['label'] = 'tr'
@@ -65,7 +66,6 @@ class SezonlukDiziCrawler(BaseCrawler):
         for m in re.finditer(video, text):
             match = m.group(1) + "}]"
 
-            print match
             sources = json.loads(match)
             for source in sources:
                 if 'p' not in str(source['label']):

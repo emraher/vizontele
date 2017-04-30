@@ -2,7 +2,7 @@ import requests
 import vizontele
 
 
-class BaseCrawler:
+class BaseDiziCrawler:
     headers = dict()
     headers["Accept"] = "text/html,application/xhtml+xml," + \
                         "application/xml;q=0.9,image/webp,*/*;q=0.8"
@@ -14,13 +14,13 @@ class BaseCrawler:
                             "AppleWebKit/537.36 (KHTML, like Gecko) " + \
                             "Ubuntu Chromium/51.0.2704.79 " + \
                             "Chrome/51.0.2704.79 " + \
-                            "Safari/537.36"
+                            "Safari/537.36";
 
     def __init__(self):
         self.episode = None
         self.callback = None
 
-    def get_sources(self, episode, callback):
+    def get_sources(self, episode, callback=None):
         self.episode = episode
         self.callback = callback
         self.episode['video_links'] = list()
@@ -34,7 +34,8 @@ class BaseCrawler:
             except:
                 pass
 
-        self.callback(self.episode)
+        if self.callback is not None:
+            self.callback(self.episode)
 
     def generate_episode_page_url(self):
         # Must be implemented by child class

@@ -6,6 +6,7 @@ import signal
 
 import subprocess
 import pget
+import webbrowser
 
 from vizontele import crawler
 from vizontele.crawler import Crawler
@@ -35,7 +36,10 @@ def run(argv):
             print '\n\n'
 
         if args.vlc is not None:
-            subprocess.call([args.vlc, '-f', episode['video_links'][-1]['url']])
+            if args.vlc == 'web':
+                webbrowser.open_new_tab(episode['video_links'][-1]['url'])
+            else:
+                subprocess.call([args.vlc, '-f', episode['video_links'][-1]['url']])
 
         if args.download:
             dirname = os.path.join(os.getcwd(), episode['dizi_url'], str(episode['season']), str(episode['episode']))
@@ -61,7 +65,7 @@ def run(argv):
     parser.add_argument('dizi', metavar='Family Guy', help='Name of the TV Show', type=str)
     parser.add_argument('season', metavar='12', help='Season number', type=int)
     parser.add_argument('episode', metavar='15', help='Episode number', type=int)
-    parser.add_argument('--site', metavar='dizilab', help='Website to crawl', type=str, default='sezonlukdizi',
+    parser.add_argument('--site', metavar='dizilab', help='Website to crawl', type=str, default='',
                         choices=crawler.dizisites.keys())
     parser.add_argument('-o', dest="output", metavar='output.json', help='Output file for crawling result', type=str)
     parser.add_argument('--vlc', metavar='/vlc/binary/destination', help='Link VLC executable to play this episode',

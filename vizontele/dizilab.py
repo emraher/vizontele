@@ -3,20 +3,20 @@ import json
 
 import requests
 
-from base import BaseCrawler
+from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
 
 
-class DizilabCrawler(BaseCrawler):
+class DizilabCrawler(BaseDiziCrawler):
     def __init__(self):
-        BaseCrawler.__init__(self)
+        BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
         return "http://dizilab.net/" + self.episode['dizi_url'] + "/sezon-" + \
                str(self.episode['season']) + "/bolum-" + str(self.episode['episode'])
 
     def after_body_loaded(self, text):
-        ajax_headers = copy.copy(BaseCrawler.headers)
+        ajax_headers = copy.copy(BaseDiziCrawler.headers)
         ajax_headers['X-Requested-With'] = 'XMLHttpRequest'
         ajax_headers['Referer'] = self.generate_episode_page_url()
 
@@ -30,6 +30,8 @@ class DizilabCrawler(BaseCrawler):
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+
+        self.episode['site'] = 'dizilab'
 
     def after_sources_loaded(self, text):
         sources = json.loads(text)['sources']

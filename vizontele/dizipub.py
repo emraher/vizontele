@@ -4,30 +4,32 @@ import json
 import re
 import requests
 
-from base import BaseCrawler
+from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
 
 
-class DizipubCrawler(BaseCrawler):
+class DizipubCrawler(BaseDiziCrawler):
     def __init__(self):
-        BaseCrawler.__init__(self)
+        BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
         return "http://dizipub.com/" + self.episode['dizi_url'] + "-" + \
                str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum"
 
     def after_body_loaded(self, text):
-        ajax_headers = copy.copy(BaseCrawler.headers)
+        ajax_headers = copy.copy(BaseDiziCrawler.headers)
         ajax_headers['X-Requested-With'] = 'XMLHttpRequest'
         ajax_headers['Referer'] = self.generate_episode_page_url()
 
         page_dom = pq(text)
         player_address = page_dom('.object-wrapper').eq(0).find('iframe').attr('src')
 
-        result = requests.get(player_address, headers=BaseCrawler.headers)
+        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+
+        self.episode['site'] = 'dizipub'
 
     def after_sources_loaded(self, text):
         m = re.search(r'sources: (.*?) ],', text)

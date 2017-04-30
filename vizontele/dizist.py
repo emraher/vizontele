@@ -3,12 +3,12 @@ import json
 import requests
 from pyquery import PyQuery as pq
 
-from base import BaseCrawler
+from base import BaseDiziCrawler
 
 
-class DizistCrawler(BaseCrawler):
+class DizistCrawler(BaseDiziCrawler):
     def __init__(self):
-        BaseCrawler.__init__(self)
+        BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
         return "http://www.dizist1.com/izle/" + self.episode['dizi_url'] + "-" + \
@@ -18,10 +18,12 @@ class DizistCrawler(BaseCrawler):
         page_dom = pq(text)
         player_address = page_dom("iframe[src^='http://www.dizist1.com']").attr('src')
 
-        result = requests.get(player_address, headers=BaseCrawler.headers)
+        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+
+        self.episode['site'] = 'dizist'
 
     def after_sources_loaded(self, text):
         page_dom = pq(text)
