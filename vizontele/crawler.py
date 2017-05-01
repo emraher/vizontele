@@ -6,6 +6,7 @@ from dizipub import DizipubCrawler
 from dizist import DizistCrawler
 from sezonlukdizi import SezonlukDiziCrawler
 from dizimag import DizimagCrawler
+from dizimek import DizimekCrawler
 
 dizisites = {
     "dizilab": DizilabCrawler,
@@ -14,34 +15,37 @@ dizisites = {
     "dizimag": DizimagCrawler,
     "dizibox": DiziboxCrawler,
     "diziay": DiziayCrawler,
-    "dizist": DizistCrawler
+    "dizist": DizistCrawler,
+    "dizimek": DizimekCrawler,
 }
 
 
 class Crawler:
-    def __init__(self, site, callback, dizi_url, season_number, episode_number):
+    def __init__(self, site, dizi_url, season_number, episode_number):
         self.site = site
-        self.callback = callback
         if self.site in dizisites.keys():
-            self.crawler = dizisites[self.site]()
+            self.dizicrawler = dizisites[self.site]()
         elif self.site == '':
-            self.crawler = None
+            self.dizicrawler = None
 
         self.episode = {"dizi_url": vizontele.slugify(dizi_url),
                         "season": season_number,
                         "episode": episode_number}
 
-    def run(self):
-        if self.crawler is not None:
-            self.crawler.get_sources(self.episode, self.callback)
+    def get_sources(self):
+        """
+        Runs the crawler and returns the episode with found video and subtitle links
+        :return: episode dict
+        """
+        if self.dizicrawler is not None:
+            self.episode = self.dizicrawler.get_sources(self.episode)
         else:
             # Site is not specified, lets check them all
             for site in dizisites.keys():
-                self.crawler = dizisites[site]()
-                self.crawler.get_sources(self.episode)
-                if 'video_links' in self.crawler.episode and len(self.crawler.episode['video_links']) > 0:
-                    self.callback(self.crawler.episode)
-                    return
+                self.dizicrawler = dizisites[site]()
+                self.episode = self.dizicrawler.get_sources(self.episode)
+                if 'video_links' in self.dizicrawler.episode and len(self.dizicrawler.episode['video_links']) > 0:
+                    break
 
-            self.callback(self.episode)
+        return self.episode
 

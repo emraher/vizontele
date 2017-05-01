@@ -28,6 +28,8 @@ class DiziayCrawler(BaseDiziCrawler):
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
 
+        self.episode['site'] = 'diziay'
+
     def after_sources_loaded(self, text):
         sources = json.loads(text)['success']
 

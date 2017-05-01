@@ -1,7 +1,5 @@
 import json
-
-import requests
-from pyquery import PyQuery as pq
+import re
 
 from base import BaseDiziCrawler
 
@@ -15,25 +13,21 @@ class DizistCrawler(BaseDiziCrawler):
                str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum"
 
     def after_body_loaded(self, text):
-        page_dom = pq(text)
-        player_address = page_dom("iframe[src^='http://www.dizist1.com']").attr('src')
+        m = re.search(r"var sources = JSON.parse\(\'(.*?)\'\);", text)
+        match = m.group(1)
 
-        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
+        print match
 
-        if result.status_code == 200:
-            self.after_sources_loaded(result.text)
+        sources = json.loads(match)
+        for source in sources:
+            if 'p' not in source['label']:
+                source['label'] += 'p'
+            video_link = {"res": source['label'], "url": source['file']}
+            if source['type'] == "mp4":
+                self.episode['video_links'].append(video_link)
 
         self.episode['site'] = 'dizist'
 
-    def after_sources_loaded(self, text):
-        page_dom = pq(text)
-        sourcesJson = page_dom(".dzst-player").attr("data-dzst-player")
 
-        sources = json.loads(sourcesJson)
-        sources = sources['tr']
-
-        for source_key in sources.keys():
-            video_link = {"res": str(source_key) + 'p', "url": sources[source_key]}
-            self.episode['video_links'].append(video_link)
 
 

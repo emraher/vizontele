@@ -14,15 +14,13 @@ class BaseDiziCrawler:
                             "AppleWebKit/537.36 (KHTML, like Gecko) " + \
                             "Ubuntu Chromium/51.0.2704.79 " + \
                             "Chrome/51.0.2704.79 " + \
-                            "Safari/537.36";
+                            "Safari/537.36"
 
     def __init__(self):
         self.episode = None
-        self.callback = None
 
-    def get_sources(self, episode, callback=None):
+    def get_sources(self, episode):
         self.episode = episode
-        self.callback = callback
         self.episode['video_links'] = list()
         self.episode['subtitle_links'] = list()
 
@@ -34,8 +32,7 @@ class BaseDiziCrawler:
             except:
                 pass
 
-        if self.callback is not None:
-            self.callback(self.episode)
+        return self.episode
 
     def generate_episode_page_url(self):
         # Must be implemented by child class
