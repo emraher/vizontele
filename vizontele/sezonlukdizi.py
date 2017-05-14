@@ -26,6 +26,13 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
+            for video_source in self.episode['video_links']:
+                if 'http' not in video_source['url']:
+                    video_source['url'] = 'http://sezonlukdizi.net' + video_source['url']
+
+            for sub_source in self.episode['subtitle_links']:
+                if 'http' not in sub_source['url']:
+                    sub_source['url'] = 'http:' + sub_source['url']
 
         self.episode['site'] = 'sezonlukdizi'
 
@@ -38,9 +45,6 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
 
             if 'p' not in str(source['label']):
                 source['label'] = str(source['label']) + 'p'
-
-            if 'http' not in source['file']:
-                source['file'] = 'http:' + source['file']
 
             video_link = {"res": source['label'], "url": source['file']}
             self.episode['video_links'].append(video_link)
@@ -56,9 +60,6 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
             elif source['label'][0] == 'E':
                 source['label'] = 'en'
 
-            if 'http' not in source['file']:
-                source['file'] = 'http:' + source['file']
-
             subtitle_link = {"lang": source['label'], "url": source['file'], "kind": "vtt"}
             self.episode['subtitle_links'].append(subtitle_link)
 
@@ -70,9 +71,6 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
             for source in sources:
                 if 'p' not in str(source['label']):
                     source['label'] = str(source['label']) + 'p'
-
-                if 'http' not in source['file']:
-                    source['file'] = 'http:' + source['file']
 
                 video_link = {"res": source['label'], "url": source['file']}
                 self.episode['video_links'].append(video_link)
@@ -88,10 +86,5 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
                 elif source['label'][0] == 'E':
                     source['label'] = 'en'
 
-                if 'http' not in source['file']:
-                    source['file'] = 'http:' + source['file']
-
                 subtitle_link = {"lang": source['label'], "url": source['file'], "kind": "vtt"}
                 self.episode['subtitle_links'].append(subtitle_link)
-
-

@@ -61,7 +61,7 @@ def run(argv):
             subprocess.call([args.vlc, '-f', episode['video_links'][-1]['url']])
 
     if args.download and len(episode['video_links']) > 0:
-        dirname = os.path.join(os.getcwd(), episode['dizi_url'], str(episode['season']), str(episode['episode']))
+        dirname = os.path.join(os.getcwd(), episode['dizi_url'], 'Season ' + str(episode['season']), 'Episode ' + str(episode['episode']))
 
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
