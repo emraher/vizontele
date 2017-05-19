@@ -2,7 +2,7 @@
 from distutils.core import setup
 from setuptools import find_packages
 
-version = 'r14.05.2017'
+version = '2017.05.19'
 setup(
     name='vizontele',
     version=version,
@@ -16,6 +16,6 @@ setup(
             'vizontele = vizontele.bin:main',
         ],
     },
-    install_requires=['requests', 'wheel', 'pyquery', 'demjson', 'pget', 'furl'],
+    install_requires=['requests', 'pyquery', 'demjson', 'pget', 'furl'],
     packages=find_packages(exclude=("tests", "tests.*")),
 )

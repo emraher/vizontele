@@ -1,11 +1,10 @@
 import copy
 import json
 
-import re
 import requests
+from pyquery import PyQuery as pq
 
 from base import BaseDiziCrawler
-from pyquery import PyQuery as pq
 
 
 class DiziayCrawler(BaseDiziCrawler):

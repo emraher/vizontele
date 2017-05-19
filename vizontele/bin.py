@@ -1,12 +1,10 @@
+import argparse
 import json
 import os
-import sys
-import argparse
-import signal
-
 import subprocess
-import pget
+import sys
 import webbrowser
+from pprint import pprint
 
 from vizontele import crawler
 from vizontele.crawler import Crawler
@@ -50,9 +48,8 @@ def run(argv):
         with open(args.output, 'w') as f:
             f.write(out_text)
     else:
-        from pprint import pprint
         pprint(episode)
-        print '\n\n'
+        print('\n\n')
 
     if args.vlc is not None and len(episode['video_links']) > 0:
         if args.vlc == 'web':
@@ -61,6 +58,7 @@ def run(argv):
             subprocess.call([args.vlc, '-f', episode['video_links'][-1]['url']])
 
     if args.download and len(episode['video_links']) > 0:
+        import pget
         dirname = os.path.join(os.getcwd(), episode['dizi_url'], 'Season ' + str(episode['season']), 'Episode ' + str(episode['episode']))
 
         if not os.path.isdir(dirname):

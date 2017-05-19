@@ -32,7 +32,7 @@ class DizipubCrawler(BaseDiziCrawler):
         self.episode['site'] = 'dizipub'
 
     def after_sources_loaded(self, text):
-        m = re.search(r'sources: (.*?) ],', text)
+        m = re.search(r'sources: (.*?)\s ', text)
         match = m.group(1) + "]"
 
         sources = json.loads(match)

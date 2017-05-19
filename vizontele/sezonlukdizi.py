@@ -40,9 +40,7 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
         videopush = re.compile(r"video\.push\(([^(]*)\);")
         for m in re.finditer(videopush, text):
             match = m.group(1)
-
             source = json.loads(match)
-
             if 'p' not in str(source['label']):
                 source['label'] = str(source['label']) + 'p'
 

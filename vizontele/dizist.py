@@ -16,8 +16,6 @@ class DizistCrawler(BaseDiziCrawler):
         m = re.search(r"var sources = JSON.parse\(\'(.*?)\'\);", text)
         match = m.group(1)
 
-        print match
-
         sources = json.loads(match)
         for source in sources:
             if 'p' not in source['label']:
