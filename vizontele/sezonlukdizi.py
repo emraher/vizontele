@@ -2,6 +2,7 @@ import json
 import re
 
 import demjson
+import execjs
 import requests
 from pyquery import PyQuery as pq
 
@@ -36,22 +37,18 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
         self.episode['site'] = 'sezonlukdizi'
 
     def after_sources_loaded(self, text):
-        videopush = re.compile(r"video\.push\(([^(]*)\);")
-        for m in re.finditer(videopush, text):
-            match = m.group(1)
-            source = json.loads(match)
+        video_altyazi_test = re.search(r"(var video(?s).*.\"\}\);)", text).group(1)
+        ctx = execjs.compile('function b(){\n' + video_altyazi_test + 'return [video, altyazi];}')
+        [sources, subs] = ctx.call("b")
+
+        for source in sources:
             if 'p' not in str(source['label']):
                 source['label'] = str(source['label']) + 'p'
 
             video_link = {"res": source['label'], "url": source['file']}
             self.episode['video_links'].append(video_link)
 
-        subpush = re.compile(r"altyazi\.push\(([^(]*)\);")
-        for m in re.finditer(subpush, text):
-            match = m.group(1)
-
-            source = demjson.decode(match)
-
+        for source in subs:
             if source['label'][0] == 'T':
                 source['label'] = 'tr'
             elif source['label'][0] == 'E':
@@ -59,29 +56,3 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
 
             subtitle_link = {"lang": source['label'], "url": source['file'], "kind": "vtt"}
             self.episode['subtitle_links'].append(subtitle_link)
-
-        video = re.compile(r"var video = ([^(]*)\}\];")
-        for m in re.finditer(video, text):
-            match = m.group(1) + "}]"
-
-            sources = json.loads(match)
-            for source in sources:
-                if 'p' not in str(source['label']):
-                    source['label'] = str(source['label']) + 'p'
-
-                video_link = {"res": source['label'], "url": source['file']}
-                self.episode['video_links'].append(video_link)
-
-        sub = re.compile(r"var altyazi = ([^(]*)\}\];")
-        for m in re.finditer(sub, text):
-            match = m.group(1) + "}]"
-
-            sources = json.loads(match)
-            for source in sources:
-                if source['label'][0] == 'T':
-                    source['label'] = 'tr'
-                elif source['label'][0] == 'E':
-                    source['label'] = 'en'
-
-                subtitle_link = {"lang": source['label'], "url": source['file'], "kind": "vtt"}
-                self.episode['subtitle_links'].append(subtitle_link)
