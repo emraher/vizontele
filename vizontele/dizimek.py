@@ -1,10 +1,6 @@
-import copy
 import json
 
-import requests
-
-from base import BaseDiziCrawler
-from pyquery import PyQuery as pq
+from .base import BaseDiziCrawler
 
 
 class DizimekCrawler(BaseDiziCrawler):
@@ -21,6 +17,3 @@ class DizimekCrawler(BaseDiziCrawler):
         self.episode['subtitle_links'] = sources['subtitle_links']
 
         self.episode['site'] = 'dizimek'
-
-
-

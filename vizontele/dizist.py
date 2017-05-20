@@ -1,7 +1,7 @@
 import json
 import re
 
-from base import BaseDiziCrawler
+from .base import BaseDiziCrawler
 
 
 class DizistCrawler(BaseDiziCrawler):
@@ -25,7 +25,3 @@ class DizistCrawler(BaseDiziCrawler):
                 self.episode['video_links'].append(video_link)
 
         self.episode['site'] = 'dizist'
-
-
-
-

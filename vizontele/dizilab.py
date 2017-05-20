@@ -2,9 +2,9 @@ import copy
 import json
 
 import requests
-
-from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
+
+from .base import BaseDiziCrawler
 
 
 class DizilabCrawler(BaseDiziCrawler):
@@ -38,5 +38,3 @@ class DizilabCrawler(BaseDiziCrawler):
         for source in sources:
             video_link = {"res": source['label'], "url": source['file']}
             self.episode['video_links'].append(video_link)
-
-

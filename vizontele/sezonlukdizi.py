@@ -1,13 +1,11 @@
-import copy
 import json
-
 import re
 
 import demjson
 import requests
-
-from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
+
+from .base import BaseDiziCrawler
 
 
 class SezonlukDiziCrawler(BaseDiziCrawler):
@@ -16,7 +14,8 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
 
     def generate_episode_page_url(self):
         return "http://sezonlukdizi.net/" + self.episode['dizi_url'] + "/" + \
-               str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum.html"
+               str(self.episode['season']) + "-sezon-" + str(
+            self.episode['episode']) + "-bolum.html"
 
     def after_body_loaded(self, text):
         page_dom = pq(text)

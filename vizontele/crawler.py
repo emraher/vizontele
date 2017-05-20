@@ -1,12 +1,12 @@
 import vizontele
-from diziay import DiziayCrawler
-from dizibox import DiziboxCrawler
-from dizilab import DizilabCrawler
-from dizipub import DizipubCrawler
-from dizist import DizistCrawler
-from sezonlukdizi import SezonlukDiziCrawler
-from dizimag import DizimagCrawler
-from dizimek import DizimekCrawler
+from .diziay import DiziayCrawler
+from .dizibox import DiziboxCrawler
+from .dizilab import DizilabCrawler
+from .dizimag import DizimagCrawler
+from .dizimek import DizimekCrawler
+from .dizipub import DizipubCrawler
+from .dizist import DizistCrawler
+from .sezonlukdizi import SezonlukDiziCrawler
 
 dizisites = {
     "dizilab": DizilabCrawler,
@@ -23,7 +23,7 @@ dizisites = {
 class Crawler:
     def __init__(self, site, dizi_url, season_number, episode_number):
         self.site = site
-        if self.site in dizisites.keys():
+        if self.site in list(dizisites.keys()):
             self.dizicrawler = dizisites[self.site]()
         elif self.site == '':
             self.dizicrawler = None
@@ -41,11 +41,11 @@ class Crawler:
             self.episode = self.dizicrawler.get_sources(self.episode)
         else:
             # Site is not specified, lets check them all
-            for site in dizisites.keys():
+            for site in list(dizisites.keys()):
                 self.dizicrawler = dizisites[site]()
                 self.episode = self.dizicrawler.get_sources(self.episode)
-                if 'video_links' in self.dizicrawler.episode and len(self.dizicrawler.episode['video_links']) > 0:
+                if 'video_links' in self.dizicrawler.episode and len(
+                        self.dizicrawler.episode['video_links']) > 0:
                     break
 
         return self.episode
-

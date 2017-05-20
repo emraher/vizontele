@@ -1,4 +1,5 @@
 import requests
+
 import vizontele
 
 
@@ -28,7 +29,8 @@ class BaseDiziCrawler:
         if result.status_code == 200:
             try:
                 self.after_body_loaded(result.text)
-                self.episode['video_links'] = vizontele.sort_video_links(self.episode['video_links'])
+                self.episode['video_links'] = vizontele.sort_video_links(
+                    self.episode['video_links'])
             except:
                 pass
 

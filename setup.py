@@ -16,6 +16,6 @@ setup(
             'vizontele = vizontele.bin:main',
         ],
     },
-    install_requires=['requests', 'pyquery', 'demjson', 'pget', 'furl'],
+    install_requires=['requests', 'pyquery', 'demjson', 'pget', 'furl', 'PyExecJS'],
     packages=find_packages(exclude=("tests", "tests.*")),
 )
