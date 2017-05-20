@@ -1,14 +1,11 @@
-import copy
-import json
-
 import re
 
 import demjson
-import requests
 import execjs
+import requests
 from pyquery import PyQuery as pq
 
-from base import BaseDiziCrawler
+from .base import BaseDiziCrawler
 
 
 class DiziayCrawler(BaseDiziCrawler):
@@ -32,7 +29,7 @@ class DiziayCrawler(BaseDiziCrawler):
 
     def after_sources_loaded(self, text):
         eval_text = re.search(r'eval\((.*)\)', text).group(1)
-        sources_text = execjs.eval('a='+eval_text)
+        sources_text = execjs.eval('a=' + eval_text)
         sources_text = re.search(r'source=(.*)\}\]', sources_text).group(1) + '}]'
         sources = demjson.decode(sources_text)
 

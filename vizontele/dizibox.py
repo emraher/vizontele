@@ -3,9 +3,9 @@ import json
 
 import requests
 from furl import furl
-
-from base import BaseDiziCrawler
 from pyquery import PyQuery as pq
+
+from .base import BaseDiziCrawler
 
 
 class DiziboxCrawler(BaseDiziCrawler):
@@ -14,7 +14,8 @@ class DiziboxCrawler(BaseDiziCrawler):
 
     def generate_episode_page_url(self):
         return "http://www.dizibox1.com/" + self.episode['dizi_url'] + "-" + \
-               str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum-izle"
+               str(self.episode['season']) + "-sezon-" + str(
+            self.episode['episode']) + "-bolum-izle"
 
     def after_body_loaded(self, text):
         ajax_headers = copy.copy(BaseDiziCrawler.headers)
@@ -42,5 +43,3 @@ class DiziboxCrawler(BaseDiziCrawler):
             video_link = {"res": source['label'], "url": source['file']}
             if "mp4" in source['type']:
                 self.episode['video_links'].append(video_link)
-
-

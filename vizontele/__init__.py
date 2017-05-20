@@ -1,5 +1,7 @@
 import re
 
+import sys
+
 
 def slugify(value):
     """
@@ -7,9 +9,11 @@ def slugify(value):
     and converts spaces to hyphens.
     """
     import unicodedata
-    value = unicode(value)
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
+    if sys.version_info < (3, 0):
+        value = str(value).decode()
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode()
+    value = re.sub('[^\w\s-]', '', value).strip().lower()
+
     return re.sub('[-\s]+', '-', value)
 
 

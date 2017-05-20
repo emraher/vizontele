@@ -11,7 +11,7 @@ from vizontele.crawler import Crawler
 
 
 def download_callback(downloader):
-    percent = ("{0:.1f}")\
+    percent = "{0:.1f}" \
         .format(100 * (downloader.total_downloaded / float(downloader.total_length)))
     filled_length = int(80 * downloader.total_downloaded / downloader.total_length)
     bar = '█' * filled_length + '-' * (80 - filled_length)
@@ -28,11 +28,14 @@ def run(argv):
     parser.add_argument('season', metavar='12', help='Season number', type=int)
     parser.add_argument('episode', metavar='15', help='Episode number', type=int)
     parser.add_argument('--site', metavar='dizilab', help='Website to crawl', type=str, default='',
-                        choices=crawler.dizisites.keys())
-    parser.add_argument('-o', dest="output", metavar='output.json', help='Output file for crawling result', type=str)
-    parser.add_argument('--vlc', metavar='/vlc/binary/destination', help='Link VLC executable to play this episode',
+                        choices=list(crawler.dizisites.keys()))
+    parser.add_argument('-o', dest="output", metavar='output.json',
+                        help='Output file for crawling result', type=str)
+    parser.add_argument('--vlc', metavar='/vlc/binary/destination',
+                        help='Link VLC executable to play this episode',
                         type=str)
-    parser.add_argument('-d', dest="download", help='If given, episode is downloaded with highest quality.',
+    parser.add_argument('-d', dest="download",
+                        help='If given, episode is downloaded with highest quality.',
                         action='store_true', default=False)
 
     try:
@@ -59,7 +62,8 @@ def run(argv):
 
     if args.download and len(episode['video_links']) > 0:
         import pget
-        dirname = os.path.join(os.getcwd(), episode['dizi_url'], 'Season ' + str(episode['season']), 'Episode ' + str(episode['episode']))
+        dirname = os.path.join(os.getcwd(), episode['dizi_url'], 'Season ' + str(episode['season']),
+                               'Episode ' + str(episode['episode']))
 
         if not os.path.isdir(dirname):
             os.makedirs(dirname)

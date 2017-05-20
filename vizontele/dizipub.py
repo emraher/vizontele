@@ -1,11 +1,11 @@
 import copy
 import json
-
 import re
-import requests
 
-from base import BaseDiziCrawler
+import requests
 from pyquery import PyQuery as pq
+
+from .base import BaseDiziCrawler
 
 
 class DizipubCrawler(BaseDiziCrawler):
@@ -43,5 +43,3 @@ class DizipubCrawler(BaseDiziCrawler):
             video_link = {"res": source['label'], "url": source['file']}
             if source['type'] == "mp4":
                 self.episode['video_links'].append(video_link)
-
-
