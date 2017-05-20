@@ -1,7 +1,11 @@
 import copy
 import json
 
+import re
+
+import demjson
 import requests
+import execjs
 from pyquery import PyQuery as pq
 
 from base import BaseDiziCrawler
@@ -18,11 +22,8 @@ class DiziayCrawler(BaseDiziCrawler):
     def after_body_loaded(self, text):
         page_dom = pq(text)
         player_address = page_dom("iframe[height='375']").attr("src")
-        ajax_address = player_address.replace("dizi-oynat", "ajax")
 
-        ajax_headers = copy.copy(BaseDiziCrawler.headers)
-        ajax_headers['X-Requested-With'] = 'XMLHttpRequest'
-        result = requests.get(ajax_address, headers=ajax_headers)
+        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
@@ -30,11 +31,14 @@ class DiziayCrawler(BaseDiziCrawler):
         self.episode['site'] = 'diziay'
 
     def after_sources_loaded(self, text):
-        sources = json.loads(text)['success']
+        eval_text = re.search(r'eval\((.*)\)', text).group(1)
+        sources_text = execjs.eval('a='+eval_text)
+        sources_text = re.search(r'source=(.*)\}\]', sources_text).group(1) + '}]'
+        sources = demjson.decode(sources_text)
 
         for source in sources:
-            video_link = {"res": source['label'], "url": source['src']}
+            if 'p' not in source['label']:
+                source['label'] += 'p'
+            video_link = {"res": source['label'], "url": source['file']}
             if "mp4" in source['type']:
                 self.episode['video_links'].append(video_link)
-
-

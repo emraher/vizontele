@@ -12,7 +12,7 @@ class DizimekCrawler(BaseDiziCrawler):
         BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
-        return "http://188.166.65.249/diziapi/" + self.episode['dizi_url'] + "/season/" + \
+        return "http://188.166.65.249/diziapi/dizi/" + self.episode['dizi_url'] + "/season/" + \
                str(self.episode['season']) + "/episode/" + str(self.episode['episode'])
 
     def after_body_loaded(self, text):

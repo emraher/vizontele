@@ -40,7 +40,7 @@ class DiziboxCrawler(BaseDiziCrawler):
             if 'p' not in source['label']:
                 source['label'] += 'p'
             video_link = {"res": source['label'], "url": source['file']}
-            if source['type'] == "mp4":
+            if "mp4" in source['type']:
                 self.episode['video_links'].append(video_link)
 
 
