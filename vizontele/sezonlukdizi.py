@@ -1,3 +1,4 @@
+import copy
 import json
 import re
 
@@ -10,6 +11,11 @@ from .base import BaseDiziCrawler
 
 
 class SezonlukDiziCrawler(BaseDiziCrawler):
+
+    cookies = '__cfduid=de7076f8dbb12f98d86619822a8f26dab1495121356; ASPSESSIONIDASCDBCBT=FHGHDAECCLGHELHKNICKNKCE; ' \
+              'ASPSESSIONIDCSDCDDAS=FKKMPHNDBKPEKLDGDLILCAAG; i=1; ' \
+              'sezonlukdizi=ziyaret=2; hit=dizibolum17146=True'
+
     def __init__(self):
         BaseDiziCrawler.__init__(self)
 
@@ -22,7 +28,9 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
         page_dom = pq(text)
         player_address = "http:" + page_dom("iframe[height='360']").eq(0).attr("src")
 
-        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
+        new_headers = copy.copy(BaseDiziCrawler.headers)
+        new_headers['Cookie'] = SezonlukDiziCrawler.cookies
+        result = requests.get(player_address, headers=new_headers)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)

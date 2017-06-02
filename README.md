@@ -2,6 +2,8 @@
 
 Vizontele is a web crawler specialized for Turkish Tv Show sites. It supports many well-known sites like SezonlukDizi, Dizilab, Dizibox etc.
 
+**Currently, many websites that are supported by vizontele are having source problems with their cloud services. Hopefully they will resolve this issue.**
+
 ## Install
 
 Vizontele is hosted at PyPI, so you can simply install the latest released package by
