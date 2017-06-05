@@ -2,7 +2,7 @@
 from distutils.core import setup
 from setuptools import find_packages
 
-version = '2017.05.21.1'
+version = '2017.06.05'
 setup(
     name='vizontele',
     version=version,
