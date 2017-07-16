@@ -14,6 +14,7 @@ setup(
     entry_points={
         'console_scripts': [
             'vizontele = vizontele.bin:main',
+            'mizontele = vizontele.bin_movie:main'
         ],
     },
     install_requires=['requests', 'pyquery', 'demjson', 'pget', 'furl', 'PyExecJS'],

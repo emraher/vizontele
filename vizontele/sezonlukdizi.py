@@ -12,9 +12,8 @@ from .base import BaseDiziCrawler
 
 class SezonlukDiziCrawler(BaseDiziCrawler):
 
-    cookies = '__cfduid=de7076f8dbb12f98d86619822a8f26dab1495121356; ASPSESSIONIDASCDBCBT=FHGHDAECCLGHELHKNICKNKCE; ' \
-              'ASPSESSIONIDCSDCDDAS=FKKMPHNDBKPEKLDGDLILCAAG; i=1; ' \
-              'sezonlukdizi=ziyaret=2; hit=dizibolum17146=True'
+    cookies = '__cfduid=de7076f8dbb12f98d86619822a8f26dab1495121356; sezonlukdizi=ziyaret=1; ' \
+              'ASPSESSIONIDCQSSTDSQ=JHJJOJKBOMDAFICGNPIINGJM; __session:0.8629218722417047:=http:'
 
     def __init__(self):
         BaseDiziCrawler.__init__(self)
@@ -36,7 +35,7 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
             self.after_sources_loaded(result.text)
             for video_source in self.episode['video_links']:
                 if 'http' not in video_source['url']:
-                    video_source['url'] = 'http://sezonlukdizi.net' + video_source['url']
+                    video_source['url'] = 'http:' + video_source['url']
 
             for sub_source in self.episode['subtitle_links']:
                 if 'http' not in sub_source['url']:
