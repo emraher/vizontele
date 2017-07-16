@@ -26,7 +26,7 @@ class _720pizleCrawler(BaseMovieCrawler):
         [sources, subs] = ctx.call("b")
 
         for source in sources:
-            video_link = {"res": source['label'], "url": source['file']}
+            video_link = {"res": source['label'], "url": "http://720pizle.com" + source['file']}
             self.movie['video_links'].append(video_link)
 
         for source in subs:
