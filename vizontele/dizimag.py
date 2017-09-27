@@ -13,7 +13,7 @@ class DizimagCrawler(BaseDiziCrawler):
         BaseDiziCrawler.__init__(self)
 
     def generate_episode_page_url(self):
-        return "http://dizimag2.co/" + self.episode['dizi_url'] + "/" + \
+        return "http://dizimag4.co/" + self.episode['dizi_url'] + "/" + \
                str(self.episode['season']) + "-sezon-" + str(
             self.episode['episode']) + "-bolum-izle-dizi.html"
 
@@ -26,7 +26,7 @@ class DizimagCrawler(BaseDiziCrawler):
         kaynak_degis = page_dom(".alterlink").eq(0).attr("onclick")
         kaynak_degis = re.search(r"kaynakdegis\('([0-9]+)'", kaynak_degis).group(1)
 
-        result = requests.post("http://dizimag2.co/service/partikule", headers=ajax_headers,
+        result = requests.post("http://dizimag4.co/service/partikule", headers=ajax_headers,
                                data={"id": kaynak_degis})
 
         if result.status_code == 200:

@@ -5,15 +5,13 @@ import re
 import demjson
 import execjs
 import requests
+import vizontele
 from pyquery import PyQuery as pq
 
 from .base import BaseDiziCrawler
 
 
 class SezonlukDiziCrawler(BaseDiziCrawler):
-
-    cookies = '__cfduid=de7076f8dbb12f98d86619822a8f26dab1495121356; sezonlukdizi=ziyaret=1; ' \
-              'ASPSESSIONIDCQSSTDSQ=JHJJOJKBOMDAFICGNPIINGJM; __session:0.8629218722417047:=http:'
 
     def __init__(self):
         BaseDiziCrawler.__init__(self)
@@ -27,9 +25,7 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
         page_dom = pq(text)
         player_address = "http:" + page_dom("iframe[height='360']").eq(0).attr("src")
 
-        new_headers = copy.copy(BaseDiziCrawler.headers)
-        new_headers['Cookie'] = SezonlukDiziCrawler.cookies
-        result = requests.get(player_address, headers=new_headers)
+        result = self.session.get(player_address)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
@@ -44,8 +40,15 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
         self.episode['site'] = 'sezonlukdizi'
 
     def after_sources_loaded(self, text):
-        video_altyazi_test = re.search(r"(var video(?s).*.\"\}\);)", text).group(1)
-        ctx = execjs.compile('function b(){\n' + video_altyazi_test + 'return [video, altyazi];}')
+        page_dom = pq(text)
+        video_frame_src = page_dom("#video").attr('src')
+        if video_frame_src is not None and video_frame_src != '':
+            video_frame_src = video_frame_src.replace('https://href.li/?', '')
+            self.drive_link_handle(video_frame_src)
+            return
+
+        video_altyazi_test = re.search(r"\<script\>(.*?)var bolum", text, re.DOTALL).group(1)
+        ctx = execjs.compile('function b(){\n' + video_altyazi_test + '\nreturn [video, altyazi];}')
         [sources, subs] = ctx.call("b")
 
         for source in sources:
@@ -63,3 +66,6 @@ class SezonlukDiziCrawler(BaseDiziCrawler):
 
             subtitle_link = {"lang": source['label'], "url": source['file'], "kind": "vtt"}
             self.episode['subtitle_links'].append(subtitle_link)
+
+    def drive_link_handle(self, link):
+        vizontele.drive_link_generator(link, session=self.session)

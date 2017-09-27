@@ -2,6 +2,7 @@ import copy
 import json
 import re
 
+import execjs
 import requests
 from pyquery import PyQuery as pq
 
@@ -17,25 +18,32 @@ class DizipubCrawler(BaseDiziCrawler):
                str(self.episode['season']) + "-sezon-" + str(self.episode['episode']) + "-bolum"
 
     def after_body_loaded(self, text):
-        ajax_headers = copy.copy(BaseDiziCrawler.headers)
-        ajax_headers['X-Requested-With'] = 'XMLHttpRequest'
-        ajax_headers['Referer'] = self.generate_episode_page_url()
-
         page_dom = pq(text)
         player_address = page_dom('.object-wrapper').eq(0).find('iframe').attr('src')
 
-        result = requests.get(player_address, headers=BaseDiziCrawler.headers)
+        result = self.session.get(player_address)
+
+        if result.status_code == 200:
+            if "sources" in result.text:
+                self.after_sources_loaded(result.text)
+            else:
+                self.after_player_loaded(result.text)
+
+        self.episode['site'] = 'dizipub'
+
+    def after_player_loaded(self, text):
+        page_dom = pq(text)
+        player_address = page_dom('iframe').attr('src')
+
+        result = self.session.get(player_address)
 
         if result.status_code == 200:
             self.after_sources_loaded(result.text)
 
-        self.episode['site'] = 'dizipub'
-
     def after_sources_loaded(self, text):
-        m = re.search(r'sources: (.*?)\s ', text)
-        match = m.group(1) + "]"
-
-        sources = json.loads(match)
+        match = re.search(r'setup\((.*?)\);', text, re.DOTALL).group(1)
+        ctx = execjs.compile("function b(){\na=" + match + "\nreturn a['sources'];}")
+        sources = ctx.call("b")
 
         for source in sources:
             if 'p' not in source['label']:

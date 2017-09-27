@@ -13,7 +13,7 @@ dizisites = {
     "dizilab": DizilabCrawler,
     "dizipub": DizipubCrawler,
     "sezonlukdizi": SezonlukDiziCrawler,
-    "dizimag": DizimagCrawler,
+    #"dizimag": DizimagCrawler,
     "dizibox": DiziboxCrawler,
     "diziay": DiziayCrawler,
     "dizist": DizistCrawler,

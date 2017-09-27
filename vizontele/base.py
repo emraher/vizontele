@@ -19,13 +19,15 @@ class BaseDiziCrawler:
 
     def __init__(self):
         self.episode = None
+        self.session = requests.Session()
+        self.session.headers.update(BaseDiziCrawler.headers)
 
     def get_sources(self, episode):
         self.episode = episode
         self.episode['video_links'] = list()
         self.episode['subtitle_links'] = list()
 
-        result = requests.get(self.generate_episode_page_url())
+        result = self.session.get(self.generate_episode_page_url())
         if result.status_code == 200:
             try:
                 self.after_body_loaded(result.text)

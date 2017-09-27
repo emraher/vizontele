@@ -1,5 +1,6 @@
 import copy
 import json
+import re
 
 import requests
 from pyquery import PyQuery as pq
@@ -34,6 +35,23 @@ class DizilabCrawler(BaseDiziCrawler):
         self.episode['site'] = 'dizilab'
 
     def after_sources_loaded(self, text):
+        redirect_url = json.loads(text)['html']
+        redirect_url = pq(redirect_url)('#episode_player').attr("src")
+
+        text = self.session.get(redirect_url).text
+
+        m = re.search(r'sources: (.*?),\]', text, re.S)
+        match = m.group(1) + "]"
+        match = match.replace('\'', '"')
+        sources = json.loads(match)
+
+        for source in sources:
+            if 'p' not in source['label']:
+                source['label'] += 'p'
+            video_link = {"res": source['label'], "url": source['file']}
+            if source['type'] == "mp4":
+                self.episode['video_links'].append(video_link)
+
         sources = json.loads(text)['sources']
         for source in sources:
             video_link = {"res": source['label'], "url": source['file']}
