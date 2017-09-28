@@ -67,7 +67,7 @@ def run(argv):
         if args.mpv == 'web':
             webbrowser.open_new_tab(episode['video_links'][-1]['url'])
         else:
-            subprocess.call([args.mpv, '-f', episode['video_links'][-1]['url']])
+            subprocess.call([args.mpv, episode['video_links'][-1]['url']])
 
     if args.download and len(episode['video_links']) > 0:
         import pget
