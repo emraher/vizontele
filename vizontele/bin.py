@@ -34,6 +34,9 @@ def run(argv):
     parser.add_argument('--vlc', metavar='/vlc/binary/destination',
                         help='Link VLC executable to play this episode',
                         type=str)
+    parser.add_argument('--mpv', metavar='/mpv/binary/destination',
+                        help='Link mpv executable to play this episode',
+                        type=str)
     parser.add_argument('-d', dest="download",
                         help='If given, episode is downloaded with highest quality.',
                         action='store_true', default=False)
@@ -59,6 +62,12 @@ def run(argv):
             webbrowser.open_new_tab(episode['video_links'][-1]['url'])
         else:
             subprocess.call([args.vlc, '-f', episode['video_links'][-1]['url']])
+
+    if args.mpv is not None and len(episode['video_links']) > 0:
+        if args.mpv == 'web':
+            webbrowser.open_new_tab(episode['video_links'][-1]['url'])
+        else:
+            subprocess.call([args.mpv, '-f', episode['video_links'][-1]['url']])
 
     if args.download and len(episode['video_links']) > 0:
         import pget
